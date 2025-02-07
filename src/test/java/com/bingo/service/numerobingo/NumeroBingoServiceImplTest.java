@@ -81,7 +81,7 @@ class NumeroBingoServiceImplTest {
         Mono<String> resultado = numeroBingoService.validarNumerosBingo(Mono.just(numeroBingo));
 
         StepVerifier.create(resultado)
-                .expectNext("Carton validado - es el ganador.")
+                .expectNext("Cartón validado - es el ganador.")
                 .verifyComplete();
     }
 }
