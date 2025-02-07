@@ -1,0 +1,316 @@
+openapi: 3.0.0
+info:
+  title: Bingo
+  description: API para gestionar el juego del Bingo versión EEUU.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Servidor local
+tags:
+  - name: bingo
+    description: Todo sobre el bingo
+  - name: carton
+    description: Todo sobre el carton
+  - name: numero
+    description: Todo sobre el numero del bingo
+paths:
+  /bingo/crear-bingo:
+    post:
+      tags:
+        - bingo
+      summary: Crea un evento para jugar Bingo
+      operationId: crearBingo
+      description: Crea un evento para jugar Bingo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BingoRequest"
+      responses:
+        "200":
+          description: "Operación finalizada correctamente"
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: "Bingo creado."
+        "500":
+          description: "Errores técnicos"
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: "Error en el servidor."
+  /bingo/listar-bingos:
+    get:
+      tags:
+        - bingo
+      summary: Lista los bingos
+      operationId: listarBingo
+      description: Lista los bingos
+      responses:
+        "200":
+          description: "Operación finalizada correctamente"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BingoResponse"
+        "500":
+          description: "Errores técnicos"
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: "Error en el servidor."
+  /carton/crear-cartones:
+    post:
+      tags:
+        - carton
+      summary: Genera un carton para el bingo
+      operationId: generarCarton
+      description: Genera Carton para el bingo.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartonRequest"
+      responses:
+        "200":
+          description: "Operación finalizada correctamente"
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: "Carton generado correctamente."
+        "500":
+          description: "Errores técnicos"
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: "Error en el servidor."
+  /carton/listar-cartones:
+    get:
+      tags:
+        - carton
+      summary: Obtiene los cartones del bingo
+      operationId: obtenerCarton
+      description: Obtiene los cartones del bingo.
+      responses:
+        "200":
+          description: "Operación finalizada correctamente"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CartonResponse"
+        "500":
+          description: "Errores técnicos"
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: "Error en el servidor."
+  /numero/generar-numero:
+    post:
+      tags:
+        - numero
+      summary: Obtiene el número para el bingo
+      operationId: obtenerNumero
+      description: Obtiene el número para el bingo.
+      parameters:
+        - name: bingoId
+          description: "Id del bingo"
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "6764c17cb1fa3cd77d0644d8"
+      responses:
+        "200":
+          description: "Operación finalizada correctamente"
+          content:
+            application/json:
+              schema:
+                properties:
+                  numero:
+                    type: integer
+                    example: 8
+        "500":
+          description: "Errores técnicos"
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: "Error en el servidor."
+  /numero/listar-numeros:
+    get:
+      tags:
+        - numero
+      summary: Obtiene los numeros generados del bingo
+      operationId: listarNumero
+      description: Obtiene los numeros generados del bingo
+      parameters:
+        - name: bingoId
+          description: "Id del bingo"
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "6764c17cb1fa3cd77d0644d8"
+      responses:
+        "200":
+          description: "Operación finalizada correctamente"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NumerosResponse"
+        "500":
+          description: "Errores técnicos"
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: "Error en el servidor."
+  /numero/validar-numeros-bingo:
+    post:
+      tags:
+        - numero
+      summary: Valida que todos los numeros del carton hayan salido
+      operationId: validarNumerosBingo
+      description: Valida que todos los numeros del carton hayan salido.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NumeroRequest"
+      responses:
+        "200":
+          description: "Operación finalizada correctamente"
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: "Carton validado - es el ganador."
+        "500":
+          description: "Errores técnicos"
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: "Error en el servidor."
+components:
+  schemas:
+    BingoRequest:
+      type: object
+      properties:
+        motivo:
+          description: "Motivo por el cual se crea el bingo"
+          type: string
+          example: "Pro salud"
+        fechaJuego:
+          description: "Fecha en el cual se jugara el bingo"
+          type: string
+          example: "06/02/2025"
+    BingoResponse:
+      type: object
+      properties:
+        id:
+          description: "Id del bingo"
+          type: string
+          example: "6764c17cb1fa3cd77d0644d8"
+        motivo:
+          description: "Motivo por el cual se crea el bingo"
+          type: string
+          example: "Pro salud"
+        fechaJuego:
+          description: "Fecha en el cual se jugara el bingo"
+          type: string
+          example: "06/02/2025"
+    CartonRequest:
+      type: object
+      properties:
+        nombre:
+          description: "Nombre de la persona quien compro el carton"
+          type: string
+          example: "Gian Marco"
+        bingoId:
+          description: "Id del Bingo al que pertenece el carton"
+          type: string
+          example: "6764c17cb1fa3cd77d0644d8"
+    CartonResponse:
+      type: object
+      properties:
+        id:
+          description: "Id del carton"
+          type: string
+          example: "6764c17cb1fa3cd77d0644d8"
+        nombre:
+          description: "Nombre de la persona quien compro el carton"
+          type: string
+          example: "Gian Marco"
+        carton:
+          description: "Numeros del carton por letra"
+          type: object
+          properties:
+            b:
+              description: "Números del 1 al 15"
+              type: string
+              example: "2, 5, 6, 8, 15"
+            i:
+              description: "Números del 16 al 30"
+              type: string
+              example: "17, 20, 21, 27, 29"
+            n:
+              description: "Números del 31 al 45"
+              type: string
+              example: "33, 38, 43, 45"
+            g:
+              description: "Números del 46 al 60"
+              type: string
+              example: "46, 51, 52, 54, 60"
+            o:
+              description: "Números del 61 al 75"
+              type: string
+              example: "62, 64, 65, 66, 68"
+    NumerosResponse:
+      type: object
+      properties:
+        numeros:
+          description: "Numeros para el bingo"
+          type: string
+          example: "6, 8, 15, 46, 51, 52, 54, 60"
+    NumeroRequest:
+      type: object
+      properties:
+        numeros:
+          description: "Numeros obtenidos del bingo"
+          type: string
+          example: "1, 2, 3, 4, 5, 9, 18, 45, 72"
+        cartonId:
+          description: "Id del carton"
+          type: string
+          example: "6764c17cb1fa3cd77d0644d8"
